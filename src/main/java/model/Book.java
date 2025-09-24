@@ -26,37 +26,9 @@ public class Book implements Comparable<Book> {
         return numberOfPages;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(title, book.title) && Objects.equals(age, book.age) && Objects.equals(numberOfPages, book.numberOfPages);
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "title='" + title + '\'' +
-                ", age=" + age +
-                ", numberOfPages=" + numberOfPages +
-                '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title, age, numberOfPages);
-    }
-
-    @Override
-    public int compareTo(Book o) {
-        return this.age.compareTo(o.age);
-    }
-
     public static Builder builder() {
         return new Builder();
     }
-
 
     public static class Builder {
         private String title;
@@ -92,6 +64,32 @@ public class Book implements Comparable<Book> {
 
         }
 
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(title, book.title) && Objects.equals(age, book.age) && Objects.equals(numberOfPages, book.numberOfPages);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", age=" + age +
+                ", numberOfPages=" + numberOfPages +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, age, numberOfPages);
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.age.compareTo(o.age);
     }
 
 }
