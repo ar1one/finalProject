@@ -1,6 +1,7 @@
 package model;
 
 
+import java.util.Comparator;
 import java.util.Objects;
 
 public class Book implements Comparable<Book> {
@@ -89,7 +90,10 @@ public class Book implements Comparable<Book> {
 
     @Override
     public int compareTo(Book o) {
-        return this.age.compareTo(o.age);
+        return Comparator.comparing(Book::getAge)
+                .thenComparing(Book::getTitle)
+                .thenComparing(Book::getNumberOfPages)
+                .compare(this, o);
     }
 
 }

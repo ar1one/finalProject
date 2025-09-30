@@ -1,5 +1,6 @@
 package inputStrategy.PersonFillStrategy;
 
+import collections.MyCustomCollection;
 import model.Person;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class PersonFiller  {
         this.strategy = strategy;
     }
 
-    public List<Person> fill(int size) {
+    public MyCustomCollection<Person> fill(int size) {
         if(strategy == null) throw new IllegalStateException("Стратегия заполнения не выбрана!");
         return strategy.fill(size);
     }
