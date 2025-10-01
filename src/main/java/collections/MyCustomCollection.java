@@ -2,9 +2,6 @@ package collections;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class MyCustomCollection<T> implements Iterable<T>{
     private T[] array; //массив
@@ -72,10 +69,4 @@ public class MyCustomCollection<T> implements Iterable<T>{
         };
     }
 
-    public Stream<T> stream() {
-        return StreamSupport.stream(
-                java.util.Spliterators.spliterator(array, 0, size, Spliterator.ORDERED),
-                false
-        );
-    }
 }
