@@ -1,6 +1,9 @@
 package strategy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class QuickSortStrategy<T extends Comparable<T>> implements SortStrategy<T> {
 
@@ -9,14 +12,37 @@ public class QuickSortStrategy<T extends Comparable<T>> implements SortStrategy<
         if (list.size() <= 1) {
             return;
         }
-        quickSort(list, 0, list.size() - 1);
+        List<T> copy = new ArrayList<>(list);
+        quickSortAsync(copy, 0, copy.size() - 1).join();
+        Collections.copy(list, copy);
     }
 
-    private void quickSort(List<T> list, int low, int high) {
+    private CompletableFuture<Void> quickSortAsync(List<T> list, int low, int high) {
         if (low < high) {
             int pivotIndex = partition(list, low, high);
-            quickSort(list, low, pivotIndex - 1);
-            quickSort(list, pivotIndex + 1, high);
+            int finalPivotIndex = pivotIndex;
+
+            CompletableFuture<Void> leftFuture = CompletableFuture.runAsync(() -> {
+                try {
+                    quickSortAsync(list, low, finalPivotIndex - 1).join();
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            });
+
+            CompletableFuture<Void> rightFuture = CompletableFuture.runAsync(() -> {
+                try {
+                    quickSortAsync(list, finalPivotIndex + 1, high).join();
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            });
+
+            return CompletableFuture.allOf(leftFuture, rightFuture);
+        } else {
+            return CompletableFuture.completedFuture(null);
         }
     }
 

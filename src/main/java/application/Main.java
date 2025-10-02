@@ -105,7 +105,7 @@ public class Main {
 
         System.out.println("Выберите алгоритм сортировки:");
         System.out.println("1. Быстрая сортировка");
-        // Добавить другие алгоритмы по мере реализации
+        System.out.println("2. Сортировка по четным возрастам");
         System.out.print("Выбор: ");
         int sortChoice = getChoice();
 
@@ -114,13 +114,16 @@ public class Main {
             case 1:
                 strategy = new QuickSortStrategy<>();
                 break;
+            case 2:
+                strategy = new CustomSortStrategy();
+                break;
             default:
                 System.out.println("Неверный выбор.");
                 return;
         }
 
         if (strategy != null) {
-            sortManager.sortAsync(currentList, strategy);
+            sortManager.sort(currentList, strategy);
         }
     }
 
@@ -133,7 +136,13 @@ public class Main {
         System.out.print("Введите ID для поиска: ");
         try {
             Integer searchId = Integer.parseInt(scanner.nextLine());
-            Person searchTarget = Person.builder().id(searchId).name("").age(0).isStudent(false).build();
+            Person searchTarget = Person.builder()
+                    .id(searchId)
+                    .name("")
+                    .age(0)
+                    .isStudent(false)
+                    .build();
+
             int index = BinarySearch.search(currentList, searchTarget);
             if (index != -1) {
                 System.out.println("Элемент найден на позиции " + index + ": " + currentList.get(index));
