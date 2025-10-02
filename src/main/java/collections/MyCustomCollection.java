@@ -6,7 +6,7 @@ import java.util.Spliterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class MyCustomCollection<T> implements Iterable<T>{
+public class MyCustomCollection<T> implements Iterable<T> {
     private T[] array; //массив
     private int size; //индекс элемента для добавления
 
@@ -77,5 +77,20 @@ public class MyCustomCollection<T> implements Iterable<T>{
                 java.util.Spliterators.spliterator(array, 0, size, Spliterator.ORDERED),
                 false
         );
+    }
+
+    private Stream<T> parallelStream() {
+        return StreamSupport.stream(
+                java.util.Spliterators.spliterator(array, 0, size, Spliterator.ORDERED),
+                true
+        );
+    }
+
+    public void getOccurrenceCounter(T target) {
+        long count = this.parallelStream()
+                .filter(i -> i != null && i.equals(target))
+                .count();
+
+        System.out.println("Количество вхождений элемента \"" + target + "\" = " + count);
     }
 }

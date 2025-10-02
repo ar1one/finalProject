@@ -1,9 +1,10 @@
 package inputStrategy.BookFillStrategy;
 
+import collections.MyCustomCollection;
 import model.Book;
 
 import java.util.List;
 
 public interface BookFillStrategy {
-    List<Book> fill(int size);
+    MyCustomCollection<Book> fill(int size);
 }

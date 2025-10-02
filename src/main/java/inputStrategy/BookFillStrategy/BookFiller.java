@@ -1,5 +1,6 @@
 package inputStrategy.BookFillStrategy;
 
+import collections.MyCustomCollection;
 import model.Book;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public class BookFiller {
     public void setStrategy(BookFillStrategy strategy) {
         this.strategy = strategy;
     }
-    public List<Book> fill(int size) {
+    public MyCustomCollection<Book> fill(int size) {
         if(strategy == null) {
             throw new IllegalStateException("Стратегия заполнения не выбрана!");
         }
