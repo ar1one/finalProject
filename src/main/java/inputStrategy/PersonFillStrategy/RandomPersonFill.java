@@ -11,6 +11,7 @@ public class RandomPersonFill implements PersonFillStrategy {
 
     @Override
     public MyCustomCollection<Person> fill(int size) {
+        if (size < 1) throw new RuntimeException("Размер коллекции для заполнения должен быть больше нуля");
         MyCustomCollection<Person> list = new MyCustomCollection<>(size);
         IntStream.range(0, size)
                 .mapToObj(i -> Person.builder()
