@@ -5,19 +5,13 @@ import java.util.List;
 public class MyBinarySearch<T>{
     private final List<? extends Comparable<? super T>> list;
     private final T search;
-    private final int indexedBinarySearch;
 
     public MyBinarySearch(List<? extends Comparable<? super T>> list, T search) {
         this.list=list;
         this.search=search;
-        this.indexedBinarySearch=indexedBinarySearch();
     }
 
     public int getIndexedBinarySearch() {
-        return indexedBinarySearch;
-    }
-
-    private int indexedBinarySearch() {
         int low = 0;
         int high = list.size()-1;
 
