@@ -8,6 +8,10 @@ import java.util.Comparator;
 public class SortService<T> {
     private SortStrategy<T> strategy;
 
+    public SortStrategy<T> getStrategy() {
+        return strategy;
+    }
+
     public void setStrategy(SortStrategy<T> strategy) {
         this.strategy = strategy;
     }

@@ -9,8 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class QuickSort<T extends Comparable<? super T>> implements SortStrategy<T> {
-    private ExecutorService threadPool = Executors.newFixedThreadPool(100);
-    private final int THRESHOLD = 100; //минимальный размер подмассива для запуска в многопоточке
+    private ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private final int THRESHOLD = 1_000_000; //минимальный размер подмассива для запуска в многопоточке
 
 
     private void sort(MyCustomCollection<T> list, int leftIndex, int rightIndex, Comparator<? super T> comparator) {
@@ -31,23 +31,31 @@ public class QuickSort<T extends Comparable<? super T>> implements SortStrategy<
             }
         }
 
-        if (rightMarker - leftIndex > THRESHOLD && rightIndex - leftMarker > THRESHOLD) {
+        Future<?> leftTask = null;
+        Future<?> rightTask = null;
+
+        if (rightMarker - leftIndex > THRESHOLD) {
             int finalRightMarker = rightMarker;
-            Future<?> leftTask = threadPool.submit(() -> sort(list, leftIndex, finalRightMarker, comparator));
-            int finalLeftMarker = leftMarker;
-            Future<?> rightTask = threadPool.submit(() -> sort(list, finalLeftMarker, rightIndex, comparator));
-
-            try {
-                leftTask.get();
-                rightTask.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            if (leftIndex < rightMarker) sort(list, leftIndex, rightMarker, comparator);
-            if (rightIndex > leftMarker) sort(list, leftMarker, rightIndex, comparator);
+            leftTask = threadPool.submit(() -> sort(list, leftIndex, finalRightMarker, comparator));
+        } else if (leftIndex < rightMarker) {
+            sort(list, leftIndex, rightMarker, comparator);
         }
+
+        if (rightIndex - leftMarker > THRESHOLD) {
+            int finalLeftMarker = leftMarker;
+            rightTask = threadPool.submit(() -> sort(list, finalLeftMarker, rightIndex, comparator));
+        } else if (leftMarker < rightIndex) {
+            sort(list, leftMarker, rightIndex, comparator);
+        }
+
+        try {
+            if (leftTask != null) leftTask.get();
+            if (rightTask != null) rightTask.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+
     }
 
     @Override
