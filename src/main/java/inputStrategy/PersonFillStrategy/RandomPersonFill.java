@@ -1,12 +1,13 @@
 package inputStrategy.PersonFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Person;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class RandomPersonFill implements PersonFillStrategy {
+public class RandomPersonFill implements DataFillStrategy<Person> {
     private Random random = new Random();
 
     @Override

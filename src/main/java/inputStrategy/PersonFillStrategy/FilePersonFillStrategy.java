@@ -1,6 +1,7 @@
 package inputStrategy.PersonFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Person;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 
-public class FilePersonFillStrategy implements PersonFillStrategy {
+public class FilePersonFillStrategy implements DataFillStrategy<Person> {
     private final String filePath;
 
     public FilePersonFillStrategy(String filePath) {

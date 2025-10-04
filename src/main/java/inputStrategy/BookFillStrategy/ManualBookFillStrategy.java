@@ -1,13 +1,14 @@
 package inputStrategy.BookFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Book;
 
 import java.time.Year;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
-public class ManualBookFillStrategy implements BookFillStrategy {
+public class ManualBookFillStrategy implements DataFillStrategy<Book> {
 
     private final Scanner scanner = new Scanner(System.in);
 

@@ -39,6 +39,15 @@ public class MyCustomCollection<T> implements Iterable<T> {
         }
     }
 
+    public void set(int index, T value) {
+        checkIndex(index);
+        array[index] = value;
+    }
+
+    public int size() {
+        return size;
+    }
+
 
     private void ensureCapacity() { //проверить емкость, при необходимости увеличить
         if (size == array.length) {
