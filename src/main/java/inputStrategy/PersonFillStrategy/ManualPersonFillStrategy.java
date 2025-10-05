@@ -21,6 +21,7 @@ public class ManualPersonFillStrategy implements DataFillStrategy<Person> {
                     String name = readNonEmptyName("Введите имя для Person " + i + ": ");
                     int id = isPositive("Введите Id для Person " + name + ": ");
                     int age = isPositive("Введите возраст для Person " + name + ": ");
+                    System.out.println("Студент? true/false: ");
                     boolean isStudent = Boolean.parseBoolean(scanner.nextLine());
                     return Person.builder()
                             .name(name)

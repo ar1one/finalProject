@@ -95,11 +95,11 @@ public class MyCustomCollection<T> implements Iterable<T> {
         );
     }
 
-    public void getOccurrenceCounter(T target) {
+    public long getOccurrenceCounter(T target) {
         long count = this.parallelStream()
                 .filter(i -> i != null && i.equals(target))
                 .count();
 
-        System.out.println("Количество вхождений элемента \"" + target + "\" = " + count);
+        return count;
     }
 }
