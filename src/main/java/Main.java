@@ -10,7 +10,6 @@ import inputStrategy.PersonFillStrategy.PersonFiller;
 import inputStrategy.PersonFillStrategy.RandomPersonFill;
 import model.Book;
 import model.Person;
-import org.w3c.dom.ls.LSOutput;
 import search.MyBinarySearch;
 import sorting.MultiThreadSorting;
 import sorting.QuickSort;
