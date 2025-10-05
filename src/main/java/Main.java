@@ -1,3 +1,4 @@
+
 import collections.MyCustomCollection;
 import inputStrategy.BookFillStrategy.BookFiller;
 import inputStrategy.BookFillStrategy.FileBookFilStrategy;
@@ -15,9 +16,10 @@ import sorting.MultiThreadSorting;
 import sorting.QuickSort;
 import sorting.SortService;
 import sorting.SortStrategy;
-
 import java.util.Comparator;
 import java.util.Scanner;
+
+import static output.WriteDown.MyOutput;
 
 public class Main {
 
@@ -35,12 +37,15 @@ public class Main {
     private static final SortService<Person> personSortService = new SortService<>();
     private static final SortService<Book> bookSortService = new SortService<>();
 
+    public static String filename="src/main/java/output/";
+    public static int P=0;
+    public static int B=0;
+
     public static void main(String[] args) {
         boolean running = true;
         while (running) {
             printMainMenu();
             int mainChoice = getChoice();
-
             switch (mainChoice) {
                 case 1: // Работа с Person
                     handlePersonMenu();
@@ -232,10 +237,23 @@ public class Main {
         if (!useNaturalOrder) {
             if ("Person".equals(entityType)) {
                 switch (fieldChoice) {
-                    case 1 -> comparator = Comparator.comparing(Person::getId);
-                    case 2 -> comparator = Comparator.comparing(Person::getName);
-                    case 3 -> comparator = Comparator.comparing(Person::getAge);
-                    case 4 -> comparator = Comparator.comparing(Person::getStudent);
+                    case 1 -> {
+                        comparator = Comparator.comparing(Person::getId);
+                        P=1;
+                    }
+
+                    case 2 ->{
+                        comparator = Comparator.comparing(Person::getName);
+                        P=2;
+                    }
+                    case 3 ->{
+                        comparator = Comparator.comparing(Person::getAge);
+                        P=3;
+                    }
+                    case 4 -> {
+                        comparator = Comparator.comparing(Person::getStudent);
+                        P=4;
+                    }
                     default -> {
                         System.out.println("Неверный выбор поля.");
                         return;
@@ -243,9 +261,18 @@ public class Main {
                 }
             } else if ("Book".equals(entityType)) {
                 switch (fieldChoice) {
-                    case 1 -> comparator = Comparator.comparing(Book::getTitle);
-                    case 2 -> comparator = Comparator.comparing(Book::getAge);
-                    case 3 -> comparator = Comparator.comparing(Book::getNumberOfPages);
+                    case 1 -> {
+                        B=1;
+                        comparator = Comparator.comparing(Book::getTitle);
+                    }
+                    case 2 -> {
+                        B=2;
+                        comparator = Comparator.comparing(Book::getAge);
+                    }
+                    case 3 -> {
+                        B=3;
+                        comparator = Comparator.comparing(Book::getNumberOfPages);
+                    }
                     default -> {
                         System.out.println("Неверный выбор поля.");
                         return;
@@ -265,6 +292,14 @@ public class Main {
                     } else {
                         personSortService.sort((MyCustomCollection<Person>) collection, (Comparator<Person>) comparator);
                     }
+                    String finalName="";
+                    switch(P) {
+                        case 1 -> finalName="SortedByID.txt";
+                        case 2 -> finalName="SortedByName.txt";
+                        case 3 -> finalName="SortedByAge.txt";
+                        case 4 -> finalName="Students.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Person/" +finalName);
                 } else if ("Book".equals(entityType)) {
                     SortStrategy<Book> strategy = new QuickSort<>();
                     bookSortService.setStrategy(strategy);
@@ -273,7 +308,15 @@ public class Main {
                     } else {
                         bookSortService.sort((MyCustomCollection<Book>) collection, (Comparator<Book>) comparator);
                     }
+                    String finalName="";
+                    switch(B) {
+                        case 1 -> finalName="SortedByTitle.txt";
+                        case 2 -> finalName="SortedByAge.txt";
+                        case 3 -> finalName="SortedByPages.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Book/" +finalName);
                 }
+
                 System.out.println("Сортировка " + entityType + " завершена.");
             }
             case 2 -> { // Сортировка слиянием
@@ -285,6 +328,15 @@ public class Main {
                     } else {
                         personSortService.sort((MyCustomCollection<Person>) collection, (Comparator<Person>) comparator);
                     }
+                    String finalName="";
+                    switch(P) {
+                        case 1 -> finalName="SortedByID.txt";
+                        case 2 -> finalName="SortedByName.txt";
+                        case 3 -> finalName="SortedByAge.txt";
+                        case 4 -> finalName="Students.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Person/" +finalName);
+
                 } else if ("Book".equals(entityType)) {
                     SortStrategy<Book> strategy = new QuickSort<>();
                     bookSortService.setStrategy(strategy);
@@ -293,7 +345,15 @@ public class Main {
                     } else {
                         bookSortService.sort((MyCustomCollection<Book>) collection, (Comparator<Book>) comparator);
                     }
+                    String finalName="";
+                    switch(B) {
+                        case 1 -> finalName="SortedByTitle.txt";
+                        case 2 -> finalName="SortedByAge.txt";
+                        case 3 -> finalName="SortedByPages.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Book/" +finalName);
                 }
+
                 System.out.println("Сортировка " + entityType + " завершена.");
             }
             default -> System.out.println("Неверный выбор алгоритма.");
