@@ -1,4 +1,4 @@
-package SortAndSearch;
+package search;
 
 import java.util.List;
 

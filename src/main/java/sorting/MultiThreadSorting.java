@@ -1,4 +1,4 @@
-package SortAndSearch;
+package sorting;
 
 import collections.MyCustomCollection;
 

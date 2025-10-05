@@ -1,4 +1,4 @@
-package inputStrategy.PersonFillStrategy;
+package inputStrategy;
 
 import model.Person;
 
