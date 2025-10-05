@@ -61,6 +61,9 @@ public class Book implements Comparable<Book> {
             if (title == null || title.trim().isEmpty()) {
                 throw new IllegalStateException("Название книги не может быть пустым");
             }
+            if(numberOfPages == null) {
+                throw new IllegalStateException("Количество страниц не может быть пустым");
+            }
             return new Book(this);
 
         }

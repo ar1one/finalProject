@@ -10,6 +10,7 @@ import inputStrategy.PersonFillStrategy.PersonFiller;
 import inputStrategy.PersonFillStrategy.RandomPersonFill;
 import model.Book;
 import model.Person;
+import org.w3c.dom.ls.LSOutput;
 import search.MyBinarySearch;
 import sorting.MultiThreadSorting;
 import sorting.QuickSort;
@@ -312,28 +313,52 @@ public class Main {
         switch (entityType) {
             case "Person" -> {
                 System.out.print("Возраст: ");
-                int age = Integer.parseInt(scanner.nextLine());
+                String age = scanner.nextLine();
                 System.out.print("Имя: ");
                 String name = scanner.nextLine();
                 System.out.print("ID: ");
-                int id = Integer.parseInt(scanner.nextLine());
+                String id = scanner.nextLine();
 
-                target = (T) Person.builder()
-                        .age(age)
-                        .name(name)
-                        .id(id)
-                        .build();
+                if (age.equals("") || id.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+
+                try {
+                    target = (T) Person.builder()
+                            .age(Integer.parseInt(age))
+                            .name(name)
+                            .id(Integer.parseInt(id))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
             }
             case "Book" -> {
                 System.out.print("Название: ");
                 String title = scanner.nextLine();
                 System.out.print("Год выпуска: ");
-                int bookAge = Integer.parseInt(scanner.nextLine());
+                String bookAge = scanner.nextLine();
+                System.out.print("Количество страниц: ");
+                String numberOfPages = scanner.nextLine();
 
-                target = (T) Book.builder()
-                        .title(title)
-                        .age(bookAge)
-                        .build();
+                if (bookAge.equals("") || numberOfPages.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+                try {
+                    target = (T) Book.builder()
+                            .title(title)
+                            .age(Integer.parseInt(bookAge))
+                            .numberOfPages(Integer.parseInt(numberOfPages))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
             }
         }
 
@@ -359,33 +384,55 @@ public class Main {
         switch (entityType) {
             case "Person" -> {
                 System.out.print("Возраст: ");
-                int age = Integer.parseInt(scanner.nextLine());
+                String age = scanner.nextLine();
                 System.out.print("Имя: ");
                 String name = scanner.nextLine();
                 System.out.print("ID: ");
-                int id = Integer.parseInt(scanner.nextLine());
+                String id = scanner.nextLine();
 
-                target = (T) Person.builder()
-                        .age(age)
-                        .name(name)
-                        .id(id)
-                        .build();
+                if (age.equals("") || id.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+
+                try {
+                    target = (T) Person.builder()
+                            .age(Integer.parseInt(age))
+                            .name(name)
+                            .id(Integer.parseInt(id))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
             }
             case "Book" -> {
                 System.out.print("Название: ");
                 String title = scanner.nextLine();
                 System.out.print("Год выпуска: ");
-                int bookAge = Integer.parseInt(scanner.nextLine());
+                String bookAge = scanner.nextLine();
                 System.out.print("Количество страниц: ");
-                int numberOfPages = Integer.parseInt(scanner.nextLine());
+                String numberOfPages = scanner.nextLine();
 
-                target = (T) Book.builder()
-                        .title(title)
-                        .numberOfPages(numberOfPages)
-                        .age(bookAge)
-                        .build();
+                if (bookAge.equals("") || numberOfPages.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+                try {
+                    target = (T) Book.builder()
+                            .title(title)
+                            .age(Integer.parseInt(bookAge))
+                            .numberOfPages(Integer.parseInt(numberOfPages))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
             }
         }
+
 
         long occurrences = collection.getOccurrenceCounter(target);
         System.out.println("Элемент встречается в коллекции " + occurrences + " раз(а).");
