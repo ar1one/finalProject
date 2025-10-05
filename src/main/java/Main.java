@@ -1,0 +1,522 @@
+import collections.MyCustomCollection;
+import inputStrategy.BookFillStrategy.BookFiller;
+import inputStrategy.BookFillStrategy.FileBookFilStrategy;
+import inputStrategy.BookFillStrategy.ManualBookFillStrategy;
+import inputStrategy.BookFillStrategy.RandomBookFill;
+import inputStrategy.DataFillStrategy;
+import inputStrategy.PersonFillStrategy.FilePersonFillStrategy;
+import inputStrategy.PersonFillStrategy.ManualPersonFillStrategy;
+import inputStrategy.PersonFillStrategy.PersonFiller;
+import inputStrategy.PersonFillStrategy.RandomPersonFill;
+import model.Book;
+import model.Person;
+import search.MyBinarySearch;
+import sorting.MultiThreadSorting;
+import sorting.QuickSort;
+import sorting.SortService;
+import sorting.SortStrategy;
+
+import output.WriteDown;
+
+import java.util.Comparator;
+import java.util.Scanner;
+
+import static output.WriteDown.MyOutput;
+
+public class Main {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    // Поля для хранения коллекций
+    private static MyCustomCollection<Person> personCollection = null;
+    private static MyCustomCollection<Book> bookCollection = null;
+
+    // Поля для фасадов заполнения
+    private static final PersonFiller personFiller = new PersonFiller();
+    private static final BookFiller bookFiller = new BookFiller();
+
+    // Поля для сервисов сортировки
+    private static final SortService<Person> personSortService = new SortService<>();
+    private static final SortService<Book> bookSortService = new SortService<>();
+
+    public static String filename="src/main/java/output/";
+    public static int P=0;
+    public static int B=0;
+
+    public static void main(String[] args) {
+        boolean running = true;
+        while (running) {
+            printMainMenu();
+            int mainChoice = getChoice();
+            switch (mainChoice) {
+                case 1: // Работа с Person
+                    handlePersonMenu();
+                    break;
+                case 2: // Работа с Book
+                    handleBookMenu();
+                    break;
+                case 3: // Выход
+                    running = false;
+                    System.out.println("Выход из программы.");
+                    break;
+                default:
+                    System.out.println("Неверный выбор.");
+            }
+        }
+        scanner.close();
+    }
+
+    private static void printMainMenu() {
+        System.out.println("\n--- Главное меню ---");
+        System.out.println("1. Работа с Person");
+        System.out.println("2. Работа с Book");
+        System.out.println("3. Выйти");
+        System.out.print("Выберите действие: ");
+    }
+
+    private static void handlePersonMenu() {
+        boolean personMenuRunning = true;
+        while (personMenuRunning) {
+            printEntityMenu("Person");
+            int choice = getChoice();
+
+            switch (choice) {
+                case 1: // Заполнить Person
+                    fillCollection(personCollection, personFiller, "Person");
+                    break;
+                case 2: // Сортировать Person
+                    sortCollection(personCollection, personSortService, "Person");
+                    break;
+                case 3: // Найти Person
+                    searchData(personCollection, "Person");
+                    break;
+                case 4: // Показать Person
+                    printCollection(personCollection, "Person");
+                    break;
+                case 5: // Подсчет вхождений Person
+                    occurrenceCounter(personCollection, "Person");
+                    break;
+                case 6: // Вернуться к главному меню
+                    personMenuRunning = false;
+                    break;
+                default:
+                    System.out.println("Неверный выбор.");
+            }
+        }
+    }
+
+    private static void handleBookMenu() {
+        boolean bookMenuRunning = true;
+        while (bookMenuRunning) {
+            printEntityMenu("Book");
+            int choice = getChoice();
+
+            switch (choice) {
+                case 1: // Заполнить Book
+                    fillCollection(bookCollection, bookFiller, "Book");
+                    break;
+                case 2: // Сортировать Book
+                    sortCollection(bookCollection, bookSortService, "Book");
+                    break;
+                case 3: // Найти Book
+                    searchData(bookCollection, "Book");
+                    break;
+                case 4: // Показать Book
+                    printCollection(bookCollection, "Book");
+                    break;
+                case 5: // Подсчет вхождений Book
+                    occurrenceCounter(bookCollection, "Book");
+                    break;
+                case 6: // Вернуться к главному меню
+                    bookMenuRunning = false;
+                    break;
+                default:
+                    System.out.println("Неверный выбор.");
+            }
+        }
+    }
+
+    private static void printEntityMenu(String entityType) {
+        System.out.println("\n--- Меню " + entityType + " ---");
+        System.out.println("1. Заполнить данные");
+        System.out.println("2. Сортировать данные");
+        System.out.println("3. Найти элемент (бинарный поиск)");
+        System.out.println("4. Показать текущий список");
+        System.out.println("5. Подсчет вхождений");
+        System.out.println("6. Назад");
+        System.out.print("Выберите действие: ");
+    }
+
+    private static void fillCollection(MyCustomCollection<?> collection, Object filler, String entityType) {
+        System.out.println("Выберите способ заполнения для " + entityType + ":");
+        System.out.println("1. Вручную");
+        System.out.println("2. Случайно");
+        System.out.println("3. Из файла");
+        System.out.print("Выбор: ");
+        int fillChoice = getChoice();
+
+        System.out.print("Введите размер коллекции: ");
+        int size = Integer.parseInt(scanner.nextLine());
+
+        DataFillStrategy strategy;
+        switch (entityType) {
+            case "Person":
+                switch (fillChoice) {
+                    case 1:
+                        strategy = new ManualPersonFillStrategy();
+                        break;
+                    case 2:
+                        strategy = new RandomPersonFill();
+                        break;
+                    case 3:
+                        System.out.print("Введите имя файла: ");
+                        String fileName = scanner.nextLine();
+                        strategy = new FilePersonFillStrategy(fileName);
+                        break;
+                    default:
+                        System.out.println("Неверный выбор.");
+                        return;
+                }
+                personFiller.setStrategy(strategy);
+                personCollection = personFiller.fill(size);
+                System.out.println("Коллекция Person заполнена. Размер: " + personCollection.size());
+                break;
+            case "Book":
+                switch (fillChoice) {
+                    case 1:
+                        strategy = new ManualBookFillStrategy();
+                        break;
+                    case 2:
+                        strategy = new RandomBookFill();
+                        break;
+                    case 3:
+                        System.out.print("Введите имя файла: ");
+                        String fileNameBook = scanner.nextLine();
+                        strategy = new FileBookFilStrategy(fileNameBook);
+                        break;
+                    default:
+                        System.out.println("Неверный выбор.");
+                        return;
+                }
+                bookFiller.setStrategy(strategy);
+                bookCollection = bookFiller.fill(size);
+                System.out.println("Коллекция Book заполнена. Размер: " + bookCollection.size());
+                break;
+        }
+    }
+
+    private static void sortCollection(MyCustomCollection<?> collection, SortService<?> sortService, String entityType) {
+        if (collection == null || collection.size() == 0) {
+            System.out.println("Сначала заполните данные для " + entityType + ".");
+            return;
+        }
+
+        // Выбор алгоритма сортировки
+        System.out.println("Выберите алгоритм сортировки для " + entityType + ":");
+        System.out.println("1. Быстрая сортировка");
+        System.out.println("2. Сортировка слиянием");
+        System.out.print("Выбор: ");
+        int sortChoice = getChoice();
+
+        // Выбор поля для сортировки (0 — естественный порядок)
+        System.out.println("Выберите поле для сортировки (0 — естественный порядок):");
+        if ("Person".equals(entityType)) {
+            System.out.println("1. ID");
+            System.out.println("2. Имя");
+            System.out.println("3. Возраст");
+            System.out.println("4. Студент (true/false)");
+        } else if ("Book".equals(entityType)) {
+            System.out.println("1. Название");
+            System.out.println("2. Год выпуска");
+            System.out.println("3. Количество страниц");
+        }
+        System.out.print("Выбор: ");
+        int fieldChoice = getChoice();
+
+        boolean useNaturalOrder = fieldChoice == 0;
+        Comparator<?> comparator = null;
+
+        if (!useNaturalOrder) {
+            if ("Person".equals(entityType)) {
+                switch (fieldChoice) {
+                    case 1 -> {
+                        comparator = Comparator.comparing(Person::getId);
+                        P=1;
+                    }
+
+                    case 2 ->{
+                        comparator = Comparator.comparing(Person::getName);
+                        P=2;
+                    }
+                    case 3 ->{
+                        comparator = Comparator.comparing(Person::getAge);
+                        P=3;
+                    }
+                    case 4 -> {
+                        comparator = Comparator.comparing(Person::getStudent);
+                        P=4;
+                    }
+                    default -> {
+                        System.out.println("Неверный выбор поля.");
+                        return;
+                    }
+                }
+            } else if ("Book".equals(entityType)) {
+                switch (fieldChoice) {
+                    case 1 -> {
+                        B=1;
+                        comparator = Comparator.comparing(Book::getTitle);
+                    }
+                    case 2 -> {
+                        B=2;
+                        comparator = Comparator.comparing(Book::getAge);
+                    }
+                    case 3 -> {
+                        B=3;
+                        comparator = Comparator.comparing(Book::getNumberOfPages);
+                    }
+                    default -> {
+                        System.out.println("Неверный выбор поля.");
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Применяем выбранный алгоритм сортировки
+        switch (sortChoice) {
+            case 1 -> { // Быстрая сортировка
+                if ("Person".equals(entityType)) {
+                    SortStrategy<Person> strategy = new QuickSort<>();
+                    personSortService.setStrategy(strategy);
+                    if (useNaturalOrder) {
+                        personSortService.sort((MyCustomCollection<Person>) collection);
+                    } else {
+                        personSortService.sort((MyCustomCollection<Person>) collection, (Comparator<Person>) comparator);
+                    }
+                    String finalName="";
+                    switch(P) {
+                        case 1 -> finalName="SortedByID.txt";
+                        case 2 -> finalName="SortedByName.txt";
+                        case 3 -> finalName="SortedByAge.txt";
+                        case 4 -> finalName="Students.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Person/" +finalName);
+                } else if ("Book".equals(entityType)) {
+                    SortStrategy<Book> strategy = new QuickSort<>();
+                    bookSortService.setStrategy(strategy);
+                    if (useNaturalOrder) {
+                        bookSortService.sort((MyCustomCollection<Book>) collection);
+                    } else {
+                        bookSortService.sort((MyCustomCollection<Book>) collection, (Comparator<Book>) comparator);
+                    }
+                    String finalName="";
+                    switch(B) {
+                        case 1 -> finalName="SortedByTitle.txt";
+                        case 2 -> finalName="SortedByAge.txt";
+                        case 3 -> finalName="SortedByPages.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Book/" +finalName);
+                }
+
+                System.out.println("Сортировка " + entityType + " завершена.");
+            }
+            case 2 -> { // Сортировка слиянием
+                if ("Person".equals(entityType)) {
+                    SortStrategy<Person> strategy = new MultiThreadSorting<>();
+                    personSortService.setStrategy(strategy);
+                    if (useNaturalOrder) {
+                        personSortService.sort((MyCustomCollection<Person>) collection);
+                    } else {
+                        personSortService.sort((MyCustomCollection<Person>) collection, (Comparator<Person>) comparator);
+                    }
+                    String finalName="";
+                    switch(P) {
+                        case 1 -> finalName="SortedByID.txt";
+                        case 2 -> finalName="SortedByName.txt";
+                        case 3 -> finalName="SortedByAge.txt";
+                        case 4 -> finalName="Students.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Person/" +finalName);
+
+                } else if ("Book".equals(entityType)) {
+                    SortStrategy<Book> strategy = new QuickSort<>();
+                    bookSortService.setStrategy(strategy);
+                    if (useNaturalOrder) {
+                        bookSortService.sort((MyCustomCollection<Book>) collection);
+                    } else {
+                        bookSortService.sort((MyCustomCollection<Book>) collection, (Comparator<Book>) comparator);
+                    }
+                    String finalName="";
+                    switch(B) {
+                        case 1 -> finalName="SortedByTitle.txt";
+                        case 2 -> finalName="SortedByAge.txt";
+                        case 3 -> finalName="SortedByPages.txt";
+                    }
+                    MyOutput((MyCustomCollection<Person>) collection, filename + "Book/" +finalName);
+                }
+
+                System.out.println("Сортировка " + entityType + " завершена.");
+            }
+            default -> System.out.println("Неверный выбор алгоритма.");
+        }
+    }
+
+    private static <T extends Comparable<T>> void searchData(MyCustomCollection<T> collection, String entityType) {
+        if (collection == null || collection.size() == 0) {
+            System.out.println("Сначала заполните и отсортируйте коллекцию " + entityType + ".");
+            return;
+        }
+
+        System.out.println("Введите данные для поиска " + entityType + ":");
+        T target = null;
+
+        switch (entityType) {
+            case "Person" -> {
+                System.out.print("Возраст: ");
+                String age = scanner.nextLine();
+                System.out.print("Имя: ");
+                String name = scanner.nextLine();
+                System.out.print("ID: ");
+                String id = scanner.nextLine();
+
+                if (age.equals("") || id.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+
+                try {
+                    target = (T) Person.builder()
+                            .age(Integer.parseInt(age))
+                            .name(name)
+                            .id(Integer.parseInt(id))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
+            }
+            case "Book" -> {
+                System.out.print("Название: ");
+                String title = scanner.nextLine();
+                System.out.print("Год выпуска: ");
+                String bookAge = scanner.nextLine();
+                System.out.print("Количество страниц: ");
+                String numberOfPages = scanner.nextLine();
+
+                if (bookAge.equals("") || numberOfPages.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+                try {
+                    target = (T) Book.builder()
+                            .title(title)
+                            .age(Integer.parseInt(bookAge))
+                            .numberOfPages(Integer.parseInt(numberOfPages))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
+            }
+        }
+
+        MyBinarySearch<T> binarySearch = new MyBinarySearch<>(collection);
+        int index = binarySearch.getIndexedBinarySearch(target);
+
+        if (index >= 0) {
+            System.out.println(entityType + " найден: " + collection.get(index) + " на позиции " + index);
+        } else {
+            System.out.println(entityType + " не найден. Индекс для вставки: " + (-index - 1));
+        }
+    }
+
+    private static <T> void occurrenceCounter(MyCustomCollection<T> collection, String entityType) {
+        if (collection == null || collection.size() == 0) {
+            System.out.println("Сначала заполните коллекцию " + entityType + ".");
+            return;
+        }
+
+        System.out.println("Введите данные для подсчёта вхождений " + entityType + ":");
+        T target = null;
+
+        switch (entityType) {
+            case "Person" -> {
+                System.out.print("Возраст: ");
+                String age = scanner.nextLine();
+                System.out.print("Имя: ");
+                String name = scanner.nextLine();
+                System.out.print("ID: ");
+                String id = scanner.nextLine();
+
+                if (age.equals("") || id.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+
+                try {
+                    target = (T) Person.builder()
+                            .age(Integer.parseInt(age))
+                            .name(name)
+                            .id(Integer.parseInt(id))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
+            }
+            case "Book" -> {
+                System.out.print("Название: ");
+                String title = scanner.nextLine();
+                System.out.print("Год выпуска: ");
+                String bookAge = scanner.nextLine();
+                System.out.print("Количество страниц: ");
+                String numberOfPages = scanner.nextLine();
+
+                if (bookAge.equals("") || numberOfPages.equals("")) {
+                    System.out.println("Введены неккоректные данные, попробуйте еще раз.");
+                    return;
+                }
+                try {
+                    target = (T) Book.builder()
+                            .title(title)
+                            .age(Integer.parseInt(bookAge))
+                            .numberOfPages(Integer.parseInt(numberOfPages))
+                            .build();
+                } catch (RuntimeException e) {
+                    System.out.println("Не получилось собрать объект. Попробуйте еще раз.");
+                    return;
+                }
+
+            }
+        }
+
+
+        long occurrences = collection.getOccurrenceCounter(target);
+        System.out.println("Элемент встречается в коллекции " + occurrences + " раз(а).");
+    }
+
+
+    // Пример метода для печати коллекции
+    private static void printCollection(MyCustomCollection<?> collection, String entityType) {
+        if (collection == null) {
+            System.out.println("Коллекция " + entityType + " пуста (не инициализирована).");
+        } else {
+            System.out.println("Текущая коллекция " + entityType + ":");
+            for (int i = 0; i < collection.size(); i++) {
+                System.out.println(collection.get(i));
+            }
+        }
+    }
+
+    private static int getChoice() {
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+}

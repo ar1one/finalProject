@@ -1,43 +1,59 @@
 package inputStrategy.BookFillStrategy;
 
+import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Book;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Optional;
 
-public class FileBookFilStrategy implements BookFillStrategy {
+public class FileBookFilStrategy implements DataFillStrategy<Book> {
     private final String filePath;
 
     public FileBookFilStrategy(String filePath) {
         this.filePath = filePath;
     }
 
-
     @Override
-    public List<Book> fill(int size) {
-        List<Book> list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            int count = 0;
-            while ((line = br.readLine()) != null && count < size) {
-                String[] parts = line.split(",");
-                int age = Integer.parseInt(parts[1].trim());
-                String title = parts[0].trim();
-                int numberOfPages = Integer.parseInt(parts[2].trim());
+    public MyCustomCollection<Book> fill(int size) {
+        MyCustomCollection<Book> list = new MyCustomCollection<>(size);
 
-                list.add(Book.builder()
-                        .title(title)
-                        .age(age)
-                        .numberOfPages(numberOfPages)
-                        .build());
-                count++;
-            }
+        try {
+            Files.lines(Paths.get(filePath))
+                    .limit(size)
+                    .map(this::parseBook)
+                    .flatMap(Optional::stream)
+                    .forEach(list::add);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Ошибка чтения файла");
         }
         return list;
+    }
+
+    private Optional<Book> parseBook(String line) {
+        String[] parts = line.split(",");
+        if (parts.length < 3) {
+            System.out.println("Пропущена строка (не хватает данных): " + line);
+            return Optional.empty();
+        }
+
+        String title = parts[0].trim();
+        int age = Integer.parseInt(parts[1].trim());
+        int numberOfPages = Integer.parseInt(parts[2].trim());
+
+        if (title.isEmpty() || age < 0 || numberOfPages < 0) {
+            System.out.println("Пропущена строка (некорректные данные): " + line);
+            return Optional.empty();
+        }
+
+        return Optional.of(Book.builder()
+                .title(title)
+                .age(age)
+                .numberOfPages(numberOfPages)
+                .build());
+
     }
 }
