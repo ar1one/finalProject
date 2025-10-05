@@ -66,6 +66,9 @@ public class Person implements Comparable<Person>{
         }
 
         public Person build() {
+            if (age == null) {
+                throw new IllegalStateException("Возраст не может быть равным нулю");
+            }
             if (id == null) {
                 throw new IllegalStateException("ID не может быть равным нулю");
             }

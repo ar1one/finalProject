@@ -1,13 +1,14 @@
 package inputStrategy.BookFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Book;
 
 
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class RandomBookFill implements BookFillStrategy {
+public class RandomBookFill implements DataFillStrategy<Book> {
     private Random random = new Random();
 
     @Override

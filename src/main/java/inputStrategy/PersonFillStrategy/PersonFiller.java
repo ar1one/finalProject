@@ -1,14 +1,15 @@
 package inputStrategy.PersonFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Person;
 
 import java.util.List;
 
 public class PersonFiller  {
-    private PersonFillStrategy strategy;
+    private DataFillStrategy<Person> strategy;
 
-    public void setStrategy(PersonFillStrategy strategy) {
+    public void setStrategy(DataFillStrategy<Person> strategy) {
         this.strategy = strategy;
     }
 

@@ -1,6 +1,7 @@
 package inputStrategy.BookFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Book;
 
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class FileBookFilStrategy implements BookFillStrategy {
+public class FileBookFilStrategy implements DataFillStrategy<Book> {
     private final String filePath;
 
     public FileBookFilStrategy(String filePath) {

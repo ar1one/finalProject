@@ -1,13 +1,14 @@
 package inputStrategy.PersonFillStrategy;
 
 import collections.MyCustomCollection;
+import inputStrategy.DataFillStrategy;
 import model.Person;
 
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
-public class ManualPersonFillStrategy implements PersonFillStrategy {
+public class ManualPersonFillStrategy implements DataFillStrategy<Person> {
     private Scanner scanner = new Scanner(System.in);
 
 
@@ -20,6 +21,7 @@ public class ManualPersonFillStrategy implements PersonFillStrategy {
                     String name = readNonEmptyName("Введите имя для Person " + i + ": ");
                     int id = isPositive("Введите Id для Person " + name + ": ");
                     int age = isPositive("Введите возраст для Person " + name + ": ");
+                    System.out.println("Студент? true/false: ");
                     boolean isStudent = Boolean.parseBoolean(scanner.nextLine());
                     return Person.builder()
                             .name(name)

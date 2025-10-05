@@ -2,6 +2,7 @@ package collections;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -37,6 +38,15 @@ public class MyCustomCollection<T> implements Iterable<T> {
         for (int i = 0; i < list.size; i++) {
             this.add(list.get(i));
         }
+    }
+
+    public void set(int index, T value) {
+        checkIndex(index);
+        array[index] = value;
+    }
+
+    public int size() {
+        return size;
     }
 
 
@@ -86,11 +96,27 @@ public class MyCustomCollection<T> implements Iterable<T> {
         );
     }
 
-    public void getOccurrenceCounter(T target) {
+    public long getOccurrenceCounter(T target) {
         long count = this.parallelStream()
                 .filter(i -> i != null && i.equals(target))
                 .count();
 
-        System.out.println("Количество вхождений элемента \"" + target + "\" = " + count);
+        return count;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MyCustomCollection<?> other)) return false;
+        if (this.size() != other.size()) return false;
+        for (int i = 0; i < this.size(); i++) {
+            if (!this.get(i).equals(other.get(i))) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(array);
     }
 }
