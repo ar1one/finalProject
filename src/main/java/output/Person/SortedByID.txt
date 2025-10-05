@@ -1,6 +1,0 @@
-Person{id=1, name='Person + 2', age=19, isStudent=true}
-Person{id=1, name='Person + 3', age=38, isStudent=true}
-Person{id=2, name='Person + 1', age=1, isStudent=true}
-Person{id=4, name='Person + 3', age=20, isStudent=true}
-Person{id=4, name='Person + 4', age=9, isStudent=false}
- = = = = =
